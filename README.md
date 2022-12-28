@@ -73,7 +73,6 @@ locals {
             name               = "GatewaySubnet"
             address_prefixes   = ["10.0.0.0/27"]
             service_endpoints  = []
-            set_nsg            = false
             # These must remain empty for AzureBastionSubnet, FirewallSubnet, and GatewaySubnet
             nsg_inbound_rules  = []
             # These must remain empty for AzureBastionSubnet, FirewallSubnet, and GatewaySubnet
@@ -84,7 +83,6 @@ locals {
             name               = "AzureBastionSubnet"
             address_prefixes   = ["10.0.0.64/26"]
             service_endpoints  = []
-            set_nsg            = false
             # These must remain empty for AzureBastionSubnet, FirewallSubnet, and GatewaySubnet
             nsg_inbound_rules  = []
             # These must remain empty for AzureBastionSubnet, FirewallSubnet, and GatewaySubnet
@@ -95,7 +93,6 @@ locals {
             name               = "snet-hub1-pub"
             address_prefixes   = ["10.0.1.0/24"]
             service_endpoints  = []
-            set_nsg            = true
             # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
             # To use defaults, use "" without adding any values.
             nsg_inbound_rules  = []
@@ -108,7 +105,6 @@ locals {
             name               = "snet-hub1-priv"
             address_prefixes   = ["10.0.2.0/24"]
             service_endpoints  = []
-            set_nsg            = true
             # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
             # To use defaults, use "" without adding any values.
             nsg_inbound_rules  = []
@@ -130,7 +126,6 @@ locals {
             name               = "snet-spoke1-subnet"
             address_prefixes   = ["10.1.0.0/24"]
             service_endpoints  = []
-            set_nsg            = true
             # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
             # To use defaults, use "" without adding any values.
             nsg_inbound_rules  = []
