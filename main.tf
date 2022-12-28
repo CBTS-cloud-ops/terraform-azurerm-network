@@ -1,3 +1,4 @@
+# This block specifies the required providers and the required versions
 terraform {
   required_providers {
     azurerm = {
@@ -7,12 +8,12 @@ terraform {
   }
 }
 
+# Read resource group data for location
 data "azurerm_resource_group" "resource_group" {
   name = var.resource_group_name
 }
 
-data "azurerm_subscription" "current" {}
-
+# Create the virtual network supplied from var.network_info
 resource "azurerm_virtual_network" "vnet" {
   name                = var.network_info.name
   resource_group_name = var.resource_group_name
@@ -22,6 +23,7 @@ resource "azurerm_virtual_network" "vnet" {
   tags = var.tags
 }
 
+# Create subnets for the virtual network supplied by var.network_info
 resource "azurerm_subnet" "snet" {
   for_each                                  = var.network_info.subnets
   name                                      = each.value.name
@@ -44,8 +46,9 @@ resource "azurerm_subnet" "snet" {
   }
 }
 
+# Create a NSG for each subnet if set_nsg is true
 resource "azurerm_network_security_group" "nsg" {
-  for_each            = var.hubvnet_name == "" ? {} : var.network_info.subnets
+  for_each            = { for s in compact([for s, v in var.network_info.subnets: v.set_nsg ? s : ""]): s => var.network_info.subnets[s] }
   name                = "nsg-${each.value.name}"
   resource_group_name = var.resource_group_name
   location            = data.azurerm_resource_group.resource_group.location
@@ -69,12 +72,14 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
+# Associate NSG to subnet if set_nsg is true
 resource "azurerm_subnet_network_security_group_association" "nsg_assoc" {
-  for_each                  = var.hubvnet_name == "" ? {} : var.network_info.subnets
+  for_each                  = { for s in compact([for s, v in var.network_info.subnets: v.set_nsg ? s : ""]): s => var.network_info.subnets[s] }
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
   subnet_id                 = azurerm_subnet.snet[each.key].id
 }
 
+# If not a hub vnet create the network peering from hub vnet to spoke vnet
 resource "azurerm_virtual_network_peering" "hub2spoke" {
   count                        = var.hubvnet_name == "" ? 0 : 1
   name                         = "peer-${var.hubvnet_name}-TO-${azurerm_virtual_network.vnet.name}"
@@ -87,6 +92,7 @@ resource "azurerm_virtual_network_peering" "hub2spoke" {
   use_remote_gateways          = false
 }
 
+# If not a hub vnet create the network peering from spoke vnet to hub vnet
 resource "azurerm_virtual_network_peering" "spoke2hub" {
   count                        = var.hubvnet_name == "" ? 0 : 1
   name                         = "peer-${azurerm_virtual_network.vnet.name}-TO-${var.hubvnet_name}"
