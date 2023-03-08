@@ -26,7 +26,7 @@ provider "azurerm" {
 # Sample hub/spoke module code:
 ```
 module "hub-vnet" {
-  source              = "git::https://dev.azure.com/CBTS-Internal/Azure%20Team/_git/terraform-network-azurerm?ref=1.0.0"
+  source              = "github.com/cbts-tools/terraform-network-azurerm?ref=1.1.0"
   network_info        = local.network_info.hub_vnets
   resource_group_name = azurerm_resource_group.network.name
   tags                = local.tags
@@ -41,7 +41,7 @@ module "hub-vnet" {
 
 # Creating a spoke vnet also creates the two-way vnet peering with the hub vnet
 module "spoke-vnets" {
-  source              = "git::https://dev.azure.com/CBTS-Internal/Azure%20Team/_git/terraform-network-azurerm?ref=1.0.0"
+  source              = "github.com/cbts-tools/terraform-network-azurerm?ref=1.1.0"
   for_each            = local.network_info.spoke_vnets
   network_info        = each.value
   hubvnet_name        = module.hub-vnet.vnet_name

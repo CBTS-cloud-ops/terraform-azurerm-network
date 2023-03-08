@@ -14,3 +14,8 @@ output "subnet_ids" {
   description = "Outputs the IDs of the subnets that are created"
   value = [for snet in azurerm_subnet.snet : snet.id]
 }
+
+output "gw_subnet_id" {
+  description = "Outputs the ID of the Gateway Subnet in a hub vnet if created"
+  value = {for gw in azurerm_subnet.snet : id => snet.id if snet.name == "GatewaySubnet"}
+}
