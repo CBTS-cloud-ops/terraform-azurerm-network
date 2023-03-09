@@ -17,5 +17,5 @@ output "subnet_ids" {
 
 output "gw_subnet_id" {
   description = "Outputs the ID of the Gateway Subnet in a hub vnet if created"
-  value = {for gw in azurerm_subnet.snet : id => gw.id if gw.name == "GatewaySubnet"}
+  value = {for gw in azurerm_subnet.snet : gw.id => gw.id if gw.name == "GatewaySubnet"}
 }
