@@ -83,7 +83,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg_assoc" {
 resource "azurerm_virtual_network_peering" "hub2spoke" {
   count                        = var.hubvnet_name == "" ? 0 : 1
   name                         = "peer-${var.hubvnet_name}-TO-${azurerm_virtual_network.vnet.name}"
-  resource_group_name          = var.hubvnet_rg == "" ? data.azurerm_resource_group.resource_group.name : var.hubvnet_rg
+  resource_group_name          = data.azurerm_resource_group.resource_group.name
   virtual_network_name         = var.hubvnet_name
   remote_virtual_network_id    = azurerm_virtual_network.vnet.id
   allow_virtual_network_access = true
