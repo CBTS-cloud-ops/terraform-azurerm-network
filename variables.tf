@@ -19,12 +19,6 @@ variable "hubvnet_name" {
   default = ""
 }
 
-variable "hubvnet_rg" {
-  description = "Hub vnet resource group required when hub vnet is in different subscription"
-  type = string
-  default = ""
-}
-
 variable "tags" {
   description = "Map of tags needed for the resouces"
   type = map
